@@ -27,7 +27,7 @@ K.clear_session()
 
 NumeroArchitecture=4
 
-dropout=0.1
+dropout=0.2
     
 nx=360
 ny=512
