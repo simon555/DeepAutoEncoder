@@ -8,14 +8,15 @@ Created on Wed Jun 28 16:09:00 2017
 from keras.layers import Input, Dense, Conv2D, MaxPooling2D, UpSampling2D, Dropout, merge, ZeroPadding2D,BatchNormalization,Flatten, Activation
 from keras.models import Model
 from keras import backend as K
-import matplotlib.pyplot as plt
 from keras.datasets import mnist
 import numpy as np
 import tensorflow as tf
 from keras.callbacks import TensorBoard,CSVLogger
 from keras.models import load_model
 import keras
-import matplotlib.pyplot as pl
+import matplotlib as mpl
+mpl.use('Agg')
+import matplotlib.pyplot as pl 
 from keras import regularizers
 import providerKerasLinux as provider
 #from multiple_gpu import make_parallel
@@ -208,13 +209,16 @@ x = keras.layers.Add()([x, s3])
 
 
 x = UpSampling2D((2, 2))(x) 
-x = Conv2D(20, (filterSize, filterSize), padding='same')(x)
+x = Conv2D(40, (filterSize, filterSize), padding='same')(x)
 x=Activation("relu")(x) 
+x = Conv2D(30, (filterSize, filterSize), padding='same')(x)
+x=Activation("relu")(x)
+x = Conv2D(20, (filterSize, filterSize), padding='same')(x)
+x=Activation("relu")(x)
 x = Conv2D(10, (filterSize, filterSize), padding='same')(x)
-x=Activation("relu")(x)
+x=Activation("relu")(x) 
 x = Conv2D(1, (filterSize, filterSize), padding='same')(x)
-x=Activation("relu")(x)
-#decoded=BatchNormalization()(x)
+x=Activation("relu")(x) 
 decoded=x
 
 
