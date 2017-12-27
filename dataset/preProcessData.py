@@ -7,7 +7,19 @@
 
 import skimage.io as io
 import numpy as np
+import os
 
+directory='preProcessedSlices/'
+directoryTrain=directory+'Train/'
+directoryTest=directory+'Test/'
+
+if not os.path.exists(directory):
+    print('new directory : ',directory)
+    os.makedirs(directory)
+    os.makedirs(directoryTest)
+    os.makedirs(directoryTrain)
+else:
+    print('directory already exists')
 
 #==============================================================================
 # go through the images 
@@ -51,7 +63,7 @@ for patient in range (11,16):
                 if (counter<2907 or counter>2974):
                     imageTranche=img[coupe,:,:]
                     imageModif=process_data(imageTranche)
-                    np.save("preProcessedSlices/Train/image{}".format(labelImage),imageModif)
+                    np.save(directoryTrain+"image{}".format(labelImage),imageModif)
                     labelImage+=1
                     if labelImage%100==0:
                         print(labelImage)
@@ -84,7 +96,7 @@ for patient in range (16,17):
                 if (counter<2907 or counter>2974):
                     imageTranche=img[coupe,:,:]
                     imageModif=process_data(imageTranche)
-                    np.save("preProcessedSlices/Test/image{}".format(labelImage),imageModif)
+                    np.save(directoryTest+"image{}".format(labelImage),imageModif)
                     labelImage+=1
                     if labelImage%100==0:
                         print(labelImage)
