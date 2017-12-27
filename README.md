@@ -11,3 +11,5 @@ Then, we train the model on the full dataset :
 
 ![](https://github.com/simon555/DeepAutoEncoder/blob/master/trainedModel/errorEvolution.png)
 
+Here is an exemple of the reconstrution, with the fully trained model : 
+![](https://github.com/simon555/DeepAutoEncoder/blob/master/trainedModel/images/finalResult.png)
