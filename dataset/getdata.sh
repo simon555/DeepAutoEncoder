@@ -8,4 +8,5 @@ echo $fileURL
 mkdir raw3DVolumes
 curl -LO $fileURL
 unrar e test-file.rar ./
+mv data-mvct raw3DVolumes
 rm test-file.rar
