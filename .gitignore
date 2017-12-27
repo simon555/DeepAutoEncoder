@@ -1,4 +1,6 @@
-dataset/
+dataset/raw3DVolumes/
+dataset/preProcessedSlices/
+dataset/test/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
