@@ -1,3 +1,27 @@
+# Requirements
+TensorFlow 
+
+Keras
+
+
+## You should first dowload the dataset ##
+To download the dataset, download the files on my private google drive and copy them into dataset/raw3DVolumes/   
+To be able to download, you should have access to the drive and be connected on your account.
+```
+https://drive.google.com/uc?export=download&id=1Trr5W7a5h5F6t7iULKZMv7Ox4RE6M02I
+```
+copy the data-mvct.rar in the folder dataset/ and decompresses it into the folder raw3DVolumes (automatically created with the following code)
+```
+unrar e data-mvct.rar raw3DVolumes/
+rm data-mvct.rar
+```
+You can now pre process these raw 3D volumes with the python script preProcessData.py that will generate the exploitable dataset.
+
+
+
+
+
+
 # DeepAutoEncoder
 
 In this project, our goal is to build an autoencoder in order to improve state-of-the-art image registration algorithm. This algorithm uses subsampled versions of images to register in order to compute a deformation flow, but we expect that by using more wise features we could improve the results.
