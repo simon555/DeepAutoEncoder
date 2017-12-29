@@ -1,7 +1,8 @@
 # Requirements
--TensorFlow
--Keras
--Unrar
+* Python 3+
+* TensorFlow
+* Keras
+* Unrar
 
 
 ## You should first dowload the dataset ##
