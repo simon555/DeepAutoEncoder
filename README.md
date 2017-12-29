@@ -1,7 +1,7 @@
 # Requirements
-TensorFlow 
-
-Keras
+-TensorFlow
+-Keras
+-Unrar
 
 
 ## You should first dowload the dataset ##
