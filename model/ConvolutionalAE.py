@@ -5,51 +5,59 @@ Created on Wed Jun 28 16:09:00 2017
 @author: simon
 """
 
+# =============================================================================
+# Import modules
+# =============================================================================
 from keras.layers import Input, Dense, Conv2D, MaxPooling2D, UpSampling2D, Dropout, merge, ZeroPadding2D,BatchNormalization,Flatten, Activation
 from keras.models import Model
 from keras import backend as K
-from keras.datasets import mnist
 import numpy as np
-import tensorflow as tf
-from keras.callbacks import TensorBoard,CSVLogger
-from keras.models import load_model
+from keras.callbacks import CSVLogger
 import keras
 import matplotlib as mpl
 mpl.use('Agg')
 import matplotlib.pyplot as pl 
-from keras import regularizers
 import provider
 #from multiple_gpu import make_parallel
-from keras.layers.core import Lambda,Reshape
-from keras.layers.advanced_activations import PReLU
 import os
+
+# =============================================================================
+# Clear the Keras session 
+# =============================================================================
 K.clear_session()
 
 
-NumeroArchitecture=4
+# =============================================================================
+# Hyperparameters
+# =============================================================================
 
-dropout=0.2
-    
+NumeroArchitecture=4
+dropout=0.2    
 nx=360
 ny=512
 Nepochs=100
 Nsamples=4
 sizeTest=4
 batchSize=4
-
 filterSize=3
-
 NumberOfMachines=1
-
 Nbatches=int(Nsamples//batchSize)
-    
-print("loading the data...")
+Nprint=1
+Nsave=5
+Nexp=1
+ 
 
+# =============================================================================
+# Load the data
+# =============================================================================
+print("loading the data...")
 x_train=provider.nextBatchTrain(Nsamples,0)
 x_test=provider.getTest(sizeTest)
 
 
-Nexp=1
+# =============================================================================
+# Define the folder to store the results of the training
+# =============================================================================
 directory='./resultsOfTraining/Exp{}/'.format(Nexp)
 
 if not os.path.exists(directory):
@@ -73,12 +81,18 @@ os.makedirs(directoryModel)
 os.makedirs(directoryImages)
 
 
+
+# =============================================================================
+# Callback to save the data along the training
+# =============================================================================
 csv_logger = CSVLogger(directory+'historic.log')
 
 
-Nprint=1
-Nsave=5
 
+# =============================================================================
+# Callback to get an overview of the training (plot/save images and model 
+# regularly)
+# =============================================================================
 class My_Callback(keras.callbacks.Callback):
     def __init__(self, Nprint, Nsave):
         self.Nprint = Nprint
@@ -123,15 +137,20 @@ class My_Callback(keras.callbacks.Callback):
 myCallback=My_Callback(Nprint,Nsave)
     
     
+
+# =============================================================================
+# Definition of the model architecture
+# =============================================================================
 print("defining the model...")
 
 input_img = Input(shape=(nx, ny, 1))  # adapt this if using `channels_first` image data format
 #(512,360)
 
 
+# =============================================================================
+# Encoding
+# =============================================================================
 
-#x=BatchNormalization()(x)
-#x=Dropout(dropout)(x)
 x = Conv2D(10, (filterSize, filterSize), padding='same')(input_img)    
 x=BatchNormalization()(x)
 x=Activation("relu")(x)
@@ -181,8 +200,9 @@ encoded=x
 
 
 
-#START DECODING
-
+# =============================================================================
+# Decoding 
+# =============================================================================
 x = Conv2D(80, (filterSize, filterSize), padding='same')(encoded) 
 x=BatchNormalization()(x)
 x=Activation("relu")(x)
@@ -227,10 +247,16 @@ x=Activation("relu")(x)
 decoded=x
 
 
-
+# =============================================================================
+# Make the model
+# =============================================================================
 
 autoencoder=Model(input_img,decoded)
 
+
+# =============================================================================
+# If applicable, use a parallel environment for training
+# =============================================================================
 print("parallelizing the model...", end='')
 if NumberOfMachines>1:
     #autoencoder=make_parallel(autoencoder,NumberOfMachines)
@@ -238,17 +264,16 @@ if NumberOfMachines>1:
     print('Need to get back make_parallel.py from the server!')
 else:
     print("False")
-
-
-
-
-
    
-print("model set up")
 
 autoencoder.compile(optimizer='adadelta', loss='mean_squared_error')
 
 print("model compiled")
+print(autoencoder.summary())
+
+# =============================================================================
+# Training
+# =============================================================================
 
 print("beginning of the training")
 hist=autoencoder.fit(x_train, x_train,
@@ -258,16 +283,12 @@ hist=autoencoder.fit(x_train, x_train,
                 validation_data=(x_test, x_test),
                 callbacks=[myCallback,csv_logger])
                 
-print(autoencoder.summary())
           
 
 print('training finished')
 
-print('saving the model')
+print('saving the results...')
 autoencoder.save(directoryModel+'my_modelFinal.h5')# creates a HDF5 file 'my_model.h5'
-
-
-print('saving the data stats')
 hLoss=hist.history['loss']
 hValidation=hist.history['val_loss']
 np.savetxt(directoryData+"TrainLoss",hLoss)
